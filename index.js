@@ -2,11 +2,13 @@ console.log('[Iohana] Drone 2D');
 
 var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
 
+var moveEsquerda = false, moveDireita = false, moveCima = false, moveBaixo = false;
+
 const ufu = new Image();
 ufu.src = './ufu.png';
 
 const drone = new Image();
-drone.src = './drone.png';
+drone.src = './drone3.png';
 
 const start = new Image();
 start.src = './start.png';
@@ -64,14 +66,14 @@ const planoDeFundo = {
   },
 };
 
-//////////////////////////////////// [Drone] /////////////////////////////////
+//////////////////////////////////// [Chão] /////////////////////////////////
 const chao = {
   x: 0,
   y: canvas.height - 30,
 }
 
 //////////////////////////////////// [Drone] /////////////////////////////////
-function fazColisao(drone2D, chao) {
+/*function fazColisao(drone2D, chao) {
   const drone2DY = drone2D.y + drone2D.altura;
   const chaoY = chao.y;
   
@@ -80,32 +82,22 @@ function fazColisao(drone2D, chao) {
   }
 
   return false;
-}
+}*/
 
 const drone2D = {
   droneX: 0,
   droneY: 0,
-  largura: 30,
-  altura: 30,
-  x: canvas.width/2,
-  y: chao.y,
-  pulo: 4.6,
-  pula() {
-    drone2D.y = 60;
-    drone2D.velocidade = -drone2D.pulo;
-  },
+  largura: 500,
+  altura: 300,
+  x: canvas.width/2 - 150,
+  y: chao.y - 100,
   gravidade: 0.25,
   velocidade: 0,
-  
-  atualiza(){
-    if(fazColisao(drone2D, chao)) {
-      console.log("Fez colisão");
-      return;
-    }
-
+  /*
+  atualiza(){    
     drone2D.velocidade = drone2D.velocidade + drone2D.gravidade;
     drone2D.y = drone2D.y + drone2D.velocidade;
-  },
+  },*/
   desenha() {
     contexto.drawImage(
       drone,
@@ -147,9 +139,9 @@ telasJogo = {
   click() {
     drone2D.pula();
   },
-  atualiza() {
+  /*atualiza() {
     drone2D.atualiza();
-  }
+  }*/
 };
 
 //////////////////////////////////// [Movimentos] /////////////////////////////////
@@ -179,7 +171,7 @@ function loop() {
   drone2D.desenha(); 
   telaInicio.desenha();*/  
   telaAtiva.desenha();
-  telaAtiva.atualiza();
+  //telaAtiva.atualiza();
 
   requestAnimationFrame(loop);
 
