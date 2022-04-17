@@ -1,5 +1,7 @@
 console.log('[Iohana] Drone 2D');
 
+var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
+
 const ufu = new Image();
 ufu.src = './ufu.png';
 
@@ -13,14 +15,14 @@ const canvas = document.querySelector('canvas');
 const contexto = canvas.getContext('2d');
 
 
-// [Tela de Início]
+//////////////////////////////////// [Tela de Início] /////////////////////////////////
 const telaInicio = {
   startX: 0,
   startY: 0,
-  largura: 1476,
-  altura: 638,
-  x: (canvas.width/2),
-  y: (canvas.height/2),
+  largura: 400,
+  altura: 200,
+  x: (canvas.width/2) - (400/2),
+  y: (canvas.height/2) - (200/2),   
   desenha() {
     contexto.drawImage(
       start,
@@ -32,6 +34,7 @@ const telaInicio = {
   },
 };
 
+//////////////////////////////////// [Plano de Fundo] /////////////////////////////////
 const planoDeFundo = {
   ufuX: 0,
   ufuY: 0,
@@ -39,7 +42,6 @@ const planoDeFundo = {
   altura: 627,
   x: 0,
   y: 0,
-  //y: canvas.height - 204,
   desenha() {
     contexto.fillStyle = '#70c5ce';
     contexto.fillRect(0,0, canvas.width, canvas.height)
@@ -62,33 +64,60 @@ const planoDeFundo = {
   },
 };
 
+//////////////////////////////////// [Drone] /////////////////////////////////
+const chao = {
+  x: 0,
+  y: canvas.height - 30,
+}
+
+//////////////////////////////////// [Drone] /////////////////////////////////
+function fazColisao(drone2D, chao) {
+  const drone2DY = drone2D.y + drone2D.altura;
+  const chaoY = chao.y;
+  
+  if (drone2D.y >=chaoY) {
+    return true;
+  }
+
+  return false;
+}
+
 const drone2D = {
   droneX: 0,
   droneY: 0,
   largura: 30,
   altura: 30,
-  x: 10,
-  y: 50,
+  x: canvas.width/2,
+  y: chao.y,
+  pulo: 4.6,
+  pula() {
+    drone2D.y = 60;
+    drone2D.velocidade = -drone2D.pulo;
+  },
   gravidade: 0.25,
   velocidade: 0,
   
   atualiza(){
+    if(fazColisao(drone2D, chao)) {
+      console.log("Fez colisão");
+      return;
+    }
+
     drone2D.velocidade = drone2D.velocidade + drone2D.gravidade;
     drone2D.y = drone2D.y + drone2D.velocidade;
   },
   desenha() {
     contexto.drawImage(
       drone,
-      drone2D.droneX, drone2D.droneY, // Sprite X, Sprite Y
-      drone2D.largura, drone2D.altura, // Tamanho do recorte na sprite
+      drone2D.droneX, drone2D.droneY, 
+      drone2D.largura, drone2D.altura, // Tamanho do recorte
       drone2D.x, drone2D.y,
       drone2D.largura, drone2D.altura,
     );
   }
 };
 
-////////TELAS
-
+//////////////////////////////////// [Telas] /////////////////////////////////
 let telaAtiva = {};
 function mudaTela(novaTela) {
   telaAtiva = novaTela
@@ -115,17 +144,40 @@ telasJogo = {
     planoDeFundo.desenha();
     drone2D.desenha();
   },
+  click() {
+    drone2D.pula();
+  },
   atualiza() {
     drone2D.atualiza();
   }
 };
 
+//////////////////////////////////// [Movimentos] /////////////////////////////////
+window.addEventListener("keydown", keydownHandler);
+
+function keydownHandler(e){
+  var key = e.keyCode;
+
+  if (key === LEFT){
+    drone2D.x--;
+  };
+  if (key === RIGHT){
+    drone2D.x++;
+  };
+  if (key === UP){
+    drone2D.y--;
+  };
+  if (key === DOWN){
+    drone2D.y++;
+  };
+}
+
+//////////////////////////////////// [Loop] /////////////////////////////////
 function loop() {
   /*drone2D.atualiza();
   planoDeFundo.desenha();
   drone2D.desenha(); 
-  telaInicio.desenha();*/
-
+  telaInicio.desenha();*/  
   telaAtiva.desenha();
   telaAtiva.atualiza();
 
